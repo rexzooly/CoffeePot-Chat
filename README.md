@@ -82,6 +82,6 @@ CoffeePot is build on WaterCooler Chat 1.4
 
 If you like this project, consider making a donation:
 
-https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9ZHN6EUXWLAQG
+[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQAAY5K8UJLQS](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQAAY5K8UJLQS)
 
 Thank you for choosing WaterCooler Chat.
