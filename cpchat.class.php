@@ -1,11 +1,14 @@
 <?php
 
 /**
- * WaterCooler Chat (Main Class file)
+ * CoffeePot Chat (Main Class file)
  * 
- * @version 1.4
- * @author Joao Ferreira <jflei@sapo.pt>
- * @copyright (c) 2018, Joao Ferreira
+ * @version 1.5
+ * @author Rexzooly Black <>
+ * @Original copyright (c) 2023, rexzooly.co.uk
+ * ============================================= 
+ * @Original author Joao Ferreira <jflei@sapo.pt>
+ * @Original copyright (c) 2018, Joao Ferreira
  */
 
 /*============================================== 
