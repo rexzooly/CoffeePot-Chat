@@ -1,9 +1,9 @@
 # CoffeePot Chat 1.5
 
 CoffeePot chat is a simple/easy to use, flat file database php/ajax chat system.
-CoffeePot is build on WaterCooler Chat 1.4
+CoffeePot is build on WaterCooler Chat 1.4 [Here](https://github.com/jonufele/WaterCooler-Chat)
 
-![Preview](https://github.com/jonufele/WaterCooler-Chat/blob/master/preview.jpg)
+![Preview](https://github.com/rexzooly/CoffeePot-Chat/blob/master/preview.jpg)
 
 ## Features
 
