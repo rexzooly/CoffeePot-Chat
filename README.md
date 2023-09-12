@@ -7,26 +7,38 @@ CoffeePot is build off WaterCooler Chat 1.4.19 [Here](https://github.com/jonufel
 
 ## Features
 
-- *Does not require MySQL Database / Javascript Frameworks* 
-- *Multi Topic rooms*
-- *Private / Read-Only Rooms*
-- *Multi user*
-- *Password protected profiles*
-- *Smilies/BBcode*
-- *Open chat interface*
-- *Easy to customize themes (100% Html/Css)*
-- *Private messages*
-- *Moderator tools*
-- *Independent display and store buffers*
-- *Invite link*
-- *Start chat with previous conversations listed*
-- *Anti-Spam feature*
-- *Account Recovery via E-mail*
-- *Generate image thumbnails for faster loading*
-- *Attachment uploads*
-- *Smart archive system*
-- *Shared Chat Across the websites hosted on the same server*
-- *Private Conversation Rooms*
+- No MySQL Database / Javascript & PHP Frameworks - *Flatfile Data Storage* 
+- Multi Topic rooms
+- Private / Read-Only Rooms
+- Multi user
+- Password protected profiles
+- Smilies/BBcode
+- Open chat interface
+- Easy to customize themes (100% Html/Css)
+- Private messages
+- Moderator tools
+- Independent display and store buffers
+- ?Invite link - *Might not be working*
+- Start chat with previous conversations listed
+- Anti-Spam feature
+- Account Recovery via E-mail - *if server supports it, can now use software without filling in this section*
+- Generate image thumbnails for faster loading
+- Attachment uploads
+- Smart archive system
+- Private Conversation Rooms
+- Youtube Thumbnals on Youtube URLS
+
+## Future things to add
+
+- Delete messages (Rooms/Private)
+- Change PM image to a flashing gif so you know you have a message
+- Word filter
+- URL filter
+- Locked rooms
+- Inline taging, so the full message is highlited not just the username, optional per user.
+- Better profile support.
+- Per Room rules.
+- Pin Message.
 
 ## Installation
 
