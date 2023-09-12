@@ -8,8 +8,8 @@
  * @copyright (c) 2023, rexzooly.co.uk
  * @since 1.5
  * ============================================= 
- * @Orginial author Jo√£o Ferreira <jflei@sapo.pt>
- * @Orginial copyright (c) 2018, Jo√£o Ferreira
+ * @Orginial author Jo„o Ferreira <jflei@sapo.pt>
+ * @Orginial copyright (c) 2018, Jo„o Ferreira
  * @since 1.1
  */
 

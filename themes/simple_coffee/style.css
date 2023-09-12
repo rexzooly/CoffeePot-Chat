@@ -215,9 +215,10 @@ body {
 
 
 #wc_msg_container .msg_pm {
-    padding: 5px;
-    border-top: 1px solid #c5dfe2;
-    background-color: #e6f1f2;
+	padding: 5px;
+    border-top: 1px solid #38220f;
+    background-color: #967259;
+    color: #ece0d1;
 }
 
 

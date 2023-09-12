@@ -17,7 +17,7 @@ $templates['wcchat'] = '
             {USER_LIST}
             {THEMES}
             <div class="copyright_note">
-                Powered by: <a href="https://github.com/jonufele/WaterCooler-Chat" target="_blank">{SCRIPT_NAME} {SCRIPT_VERSION}4</a>
+                Powered by: <a href="https://github.com/jonufele/WaterCooler-Chat" target="_blank">{SCRIPT_NAME} {SCRIPT_VERSION}</a>
             </div>
         </div>
         <div class="left_col">
@@ -41,5 +41,4 @@ $templates['wcchat.critical_error'] = '
 </div>';
 
 $templates['wcchat.botNoAccessNote'] = '403: Forbidden; Powered by: <a href="https://github.com/jonufele/WaterCooler-Chat" target="_blank">{SCRIPT_NAME} {SCRIPT_VERSION}</a>';
-
 ?>

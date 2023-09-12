@@ -206,22 +206,10 @@ class WcUtils {
         }
         return $output;
     }
-
-    /**
-     * Checks if a variable contains data
-     * 
-     * @since 1.1
-     * @param string $var
-     * @return bool
-     */
-    public static function hasData($var) {
-
-        if (strlen($var) > 0) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
+    
+	public static function hasData($var) {
+		return ($var !== null && strlen($var) > 0);
+	}
 }
 
 ?>

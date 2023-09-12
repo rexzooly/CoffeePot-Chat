@@ -17,7 +17,7 @@ $templates['cpchat'] = '
             {USER_LIST}
             {THEMES}
             <div class="copyright_note">
-                Powered by: <a href="https://github.com/rexzooly/CoffeePot-Chat" target="_blank">CoffeePot Chat 1.5</a>
+                Powered by: <a href="https://github.com/rexzooly/CoffeePot-Chat" target="_blank">{SCRIPT_NAME} {SCRIPT_VERSION}</a>
             </div>
         </div>
         <div class="left_col">

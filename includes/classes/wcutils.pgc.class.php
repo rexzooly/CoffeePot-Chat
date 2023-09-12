@@ -127,8 +127,7 @@ class WcPgc {
      * @return void
      */
     public static function wcSetCookie($name, $value) {
-    
-        setcookie(
+		setcookie(
             self::parseCookieName(WcChat::$wcPrefix . '_' . $name), 
             $value,
             time() + (86400 * WcChat::$cookieExpire), 

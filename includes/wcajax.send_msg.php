@@ -219,12 +219,12 @@
                 }
 
                 // Write and return the post parsed as html code
-                $towrite = 
-                    WcTime::parseMicroTime() . '|' . 
-                    $name_prefix . base64_encode($this->user->name) . '|' . 
-                    str_replace("\n", '<br>', strip_tags($text)) . 
-                    "\n"
-                ;
+				$towrite = 
+					WcTime::parseMicroTime() . '|' . 
+					$name_prefix . base64_encode($this->user->name) . '|' . 
+					str_replace("\n", '<br>', htmlspecialchars_decode(strip_tags(htmlspecialchars($text)))) . 
+					"\n"
+				;
                 WcFile::writeFile(MESSAGES_LOC, $source . $towrite, 'w');
                 $this->room->updateCurrLastMod();
                 touch(ROOMS_LASTMOD);
