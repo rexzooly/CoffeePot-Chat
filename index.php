@@ -1,24 +1,17 @@
 <?php
-
 /**
- * Index
- * 
- * @package CoffeePot Chat
- * @author Rexzooly Black <>
- * @copyright (c) 2023, rexzooly.co.uk
- * @since 1.5
- * ============================================= 
- * @Orginial author Jo„o Ferreira <jflei@sapo.pt>
- * @Orginial copyright (c) 2018, Jo„o Ferreira
- * @since 1.1
+ * CoffeePot Chat
+ *
+ * @author Rexzooly Black <copyright (c) 2023, rexzooly.co.uk> 1.5
+ * @Orginial author Jo√£o Ferreira <copyright (c) 2018, Jo√£o Ferreira> 1.4
  */
 
 	include 'cpchat.class.php';    # Change this to match your server's path to "chat.class.php" file
 	$chat = new WcChat();
 	echo $chat->printIndex();
-	/* Future
+/* Future
 	include 'cpchat.class.php';    # Change this to match your server's path to "chat.class.php" file
 	$chat = new CpChat();
 	echo $chat->printIndex(); 	
-   	*/
-?>	
+*/
+?>
