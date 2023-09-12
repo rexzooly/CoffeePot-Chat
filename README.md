@@ -35,10 +35,13 @@ CoffeePot is build off WaterCooler Chat 1.4.19 [Here](https://github.com/jonufel
 - Word filter
 - URL filter
 - Locked rooms
-- Inline taging, so the full message is highlited not just the username, optional per user.
+- Inline taging - *so the full message is highlited not just the username, optional per user.*
 - Better profile support.
 - Per Room rules.
 - Pin Message.
+- Logout
+- Real Register System
+- Other CMS login - *So you can embed it in to your original site and login system.*
 
 ## Installation
 
