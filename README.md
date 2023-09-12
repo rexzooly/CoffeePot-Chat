@@ -42,6 +42,7 @@ CoffeePot is build off WaterCooler Chat 1.4.19 [Here](https://github.com/jonufel
 - Logout
 - Real Register System
 - Other CMS login - *So you can embed it in to your original site and login system.*
+- Real Admin Panal to control settings, users, message & rooms
 
 ## Installation
 
