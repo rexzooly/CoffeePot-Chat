@@ -3,9 +3,14 @@
 /**
  * Settings
  * 
- * @package WaterCooler Chat
- * @author Joao Ferreira <jflei@sapo.pt>
- * @copyright (c) 2018, Joao Ferreira
+ * @package CoffeePot Chat
+ * @author Rexzooly Black <>
+ * @copyright (c) 2023, rexzooly.co.uk
+ * @since 1.5
+ # ==========================================
+ * @Original package WaterCooler Chat
+ * @Original author Joao Ferreira <jflei@sapo.pt>
+ * @Original copyright (c) 2018, Joao Ferreira
  * @since 1.1
  */
 
@@ -17,7 +22,7 @@
 # ============================================================================
 
 // Main chat title
-define('TITLE', 'My Chat');
+define('TITLE', 'CoffeePot Chat 1.5');
 
 # ============================================================================
 #                  INCLUDE DIRECTORY
@@ -124,7 +129,7 @@ define('ATTACHMENT_MAX_POST_N', 2);
 # ============================================================================
 
 define('DEFAULT_ROOM', 'General');
-define('DEFAULT_THEME' , 'simple_blue');
+define('DEFAULT_THEME' , 'simple_coffee');
 
 
 # ============================================================================
