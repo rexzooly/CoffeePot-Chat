@@ -1,11 +1,15 @@
 <?php
 
 /**
- * WaterCooler Chat (Image Utility class)
- * 
- * @version 1.4
- * @author Joao Ferreira <jflei@sapo.pt>
- * @copyright (c) 2018, Joao Ferreira
+ * CoffeePot Chat (Image Utility class)
+ *
+ * @version 1.5
+ * @author Rexzooly Black <>
+ * @copyright (c) 2023, rexzooly.co.uk
+ * ================================================
+ * @Original version 1.4
+ * @Original author Joao Ferreira <jflei@sapo.pt>
+ * @Original copyright (c) 2018, Joao Ferreira
  */
 class WcImg {
 
@@ -300,6 +304,4 @@ class WcImg {
         if (!file_exists($target_image)) { return false; } else { return true; }
     }
 }
-
-
 ?>
