@@ -1053,14 +1053,14 @@ class WcRoom {
             // Count the number of parameters
             // (3 = normal event, 4 = event with a target user)
             $tar_user = '';
-            $target_is_usergroup = FALSE;
+            $target_is_usergroup = false;
             if(substr_count($v, '|') == 3) {
                 list($time, $user, $tar_user, $msg) = explode('|', trim($v), 4);
-                if(strpos($tar_user, '*') !== FALSE) {
+                if(strpos($tar_user, '*') !== false) {
                     $tar_user = base64_decode(
                         str_replace('*', '', $tar_user)
                     );
-                    $target_is_usergroup = TRUE;
+                    $target_is_usergroup = true;
                 } else {
                     $tar_user = base64_decode($tar_user);
                 }
@@ -1068,16 +1068,16 @@ class WcRoom {
                       list($time, $user, $msg) = explode('|', trim($v), 3);
             }
             
-            $read = FALSE;
+            $read = false;
             if($tar_user) {
                 if(!$target_is_usergroup && $tar_user == WcPgc::mySession('cname')) {
-                    $read = TRUE;    
+                    $read = true;    
                 }
                 if($target_is_usergroup && $this->hasPermission($tar_user, 'R')) {
-                    $read = TRUE;
+                    $read = true;
                 }
             } else {
-                $read = TRUE;
+                $read = true;
             }
             
             // Process event if target is current user or no target
@@ -1119,7 +1119,7 @@ class WcRoom {
                                 ($time_date != $today_date ? ' '.$time_date : ''),
                             'MSG' => WcGui::parseBbcode(
                                 $msg,
-                                ($this->user->hasPermission('ATTACH_DOWN', 'skip_msg') ? TRUE : FALSE),
+                                ($this->user->hasPermission('ATTACH_DOWN', 'skip_msg') ? true : false),
                                 $this->user->name
                             )
                         )

@@ -1,15 +1,9 @@
 /**
- *  (Javascript file)
+ * WaterCooler Chat (Javascript file)
  * 
- * @package CoffeePot Chat
- * @author Rexzooly Black <>
- * @copyright (c) 2023, rexzooly.co.uk
- * @since 1.5
- # ==========================================
- * @Original package WaterCooler Chat
- * @Original author Joao Ferreira <jflei@sapo.pt>
- * @Original copyright (c) 2018, Joao Ferreira
- * @since 1.1
+ * @version 1.4
+ * @author Joao Ferreira <jflei@sapo.pt>
+ * @copyright (c) 2018, Joao Ferreira
  */
 
 /*==================================
@@ -35,48 +29,33 @@
  #       HTTP OBJECT (AJAX)        #
  ==================================*/
  
- function getHTTPObject()
-{
- var xmlhttp = false;
- try
- {
-  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-  }
- catch (e)
- {
-  try
-  {
-   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-   }
-  catch (e)
-  {
-   xmlhttp = false;
-   }
-  }
- if(!xmlhttp && typeof XMLHttpRequest!='undefined')
- {
-  try
-  {
-    xmlhttp = new XMLHttpRequest();
-    }
-  catch (e)
-  {
-    xmlhttp = false;
-    }
-  }
- if(!xmlhttp && window.createRequest)
- {
-  try
-  {
-    xmlhttp = window.createRequest();
-    }
-  catch (e)
-  {
-    xmlhttp = false;
-    }
-  }
- return xmlhttp;
- }
+function getHTTPObject(){
+	var xmlhttp = false;
+	try{
+		xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+	}catch (e){
+		try{
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}catch (e){
+			xmlhttp = false;
+		}
+	}
+	if(!xmlhttp && typeof XMLHttpRequest!='undefined'){
+		try{
+			xmlhttp = new XMLHttpRequest();
+		}catch (e){
+			xmlhttp = false;
+		}
+	}
+	if(!xmlhttp && window.createRequest){
+		try{
+			xmlhttp = window.createRequest();
+		}catch (e){
+			xmlhttp = false;
+		}
+	}
+	return xmlhttp;
+}
  
 /*=================================
  #            TOPIC               #
@@ -1183,9 +1162,9 @@ function wc_multi_toggle(id)
 
 function wc_toggle_smiley(field, container) {
     if(document.getElementById(container).className != 'closed') {
-    wc_toggle('wc_smiley_icon' + field); 
-    wc_toggle('wc_smiley_box' + field);
-    document.getElementById(field).focus();
+		wc_toggle('wc_smiley_icon' + field); 
+		wc_toggle('wc_smiley_box' + field);
+		document.getElementById(field).focus();
     }
 }
 

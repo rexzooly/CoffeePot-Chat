@@ -221,6 +221,13 @@ public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL
     );
 
     $all = ((WcPgc::myGet('mode') != 'send_msg') ? WcPgc::myGet('all') : 'ALL');
+	
+	$pattern = '/v=([A-Za-z0-9_\-]+)/';
+	if (preg_match($pattern, $data, $matches)) {
+		$videoId = $matches[1];
+	} else {
+		$videoId = WcChat::$includeDirTheme . 'images/video_cover.jpg';
+	}
 
     $replace = array(
         '<b>\\1</b>',
@@ -261,7 +268,8 @@ public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL
         </div>',
         '<div id="im_'.$msg_id.'\\1">
             <a href="#" onclick="wc_pop_vid(\''.$msg_id.'\\1\', \'\\1\', ' . VIDEO_WIDTH . ', ' . VIDEO_HEIGHT . '); return false;">
-                <img src="' . WcChat::$includeDirTheme . 'images/video_cover.jpg" class="thumb" style="margin: 10px; width: '.IMAGE_MAX_DSP_DIM.'px" onload="wc_scroll(\''.$all.'\')">
+                <!--img src="' . WcChat::$includeDirTheme . 'images/video_cover.jpg" class="thumb" style="margin: 10px; width: '.IMAGE_MAX_DSP_DIM.'px" onload="wc_scroll(\''.$all.'\')" -->
+                <img src="https://img.youtube.com/vi/' . $videoId . '/0.jpg" class="thumb" style="margin: 10px; width: '.IMAGE_MAX_DSP_DIM.'px" onload="wc_scroll(\''.$all.'\')">
             </a>
         </div>
         <div id="wc_video_'.$msg_id.'\\1" class="closed"></div>',
@@ -276,8 +284,37 @@ public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL
     );
 
     $output = preg_replace($search, $replace, $data);
+	// Process smilies next with the bbcode
+	$smilies = array(
+		'1' => ':)',
+		'3' => ':o',
+		'2' => ':(',
+		'4' => ':|',
+		'5' => ':frust:',
+		'6' => ':D',
+		'7' => ':p',
+		'8' => '-_-',
+		'9' => '>_<',
+		'10' => ':E',
+		'11' => ':mad:',
+		'12' => '^_^',
+		'13' => ':cry:',
+		'14' => ':inoc:',
+		'15' => ':z',
+		'16' => ':love:',
+		'17' => '@_@',
+		'18' => ':sweat:',
+		'19' => ':ann:',
+		'20' => ':susp:',
+		'21' => ':cup:'
+	);
 
-    // Process smilies next with the bbcode
+	foreach ($smilies as $key => $value) {
+		$search = $value; // Replace individual occurrences of the emoji
+		$replacement = self::popTemplate('wcchat.toolbar.smiley.item.parsed', array('key' => $key));
+		$output = str_replace($search, $replacement, $output);
+	}
+    /** Process smilies next with the bbcode
     $smilies = array(
         '1' => ':)',
         '3' => ':o',
@@ -314,6 +351,7 @@ public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL
 			$output
 		);
 	}
+	*/
 	/*
     foreach ($smilies as $key => $value) {
         $output = preg_replace(
@@ -331,159 +369,16 @@ public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL
         '@'.$user_name, 
         self::popTemplate(
             'wcchat.posts.curr_user_ref',
-            array('NAME' => $user_name)
+            array('NAME' => '@' . $user_name)
         ), 
         $output
     );
 
     return $output;
 }	 
-	/* 
-    public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL) {
-    
-        $search =
-            array(
-                '/\[b\](.*?)\[\/b\]/i',
-                '/\[i\](.*?)\[\/i\]/i',
-                '/\[u\](.*?)\[\/u\]/i',
-                '/\[img](.*?)\[\/img\]/i',
-                '/\[imga\|([0-9]+)x([0-9]+)\|([0-9]+)x([0-9]+)[|]?\](.*?)\[\/img\]/i',
-                '/\[imga\|([0-9]+)x([0-9]+)\|([0-9]+)x([0-9]+)\|tn_([0-9A-Z]+)[|]?\](.*?)\[\/img\]/i',
-                '/\[img\|([0-9]+)x([0-9]+)\|([0-9]+)x([0-9]+)[|]?\](.*?)\[\/img\]/i',
-                '/\[img\|([0-9]+)x([0-9]+)\|([0-9]+)x([0-9]+)\|tn_([0-9A-Z]+)[|]?\](.*?)\[\/img\]/i',
-                '/\[img\|([0-9]+)[|]?\](.*?)\[\/img\]/i',
-                '/\[url\="(.*?)"\](.*?)\[\/url\]/i',
-                '/\[attach_(.*?)_([0-9a-f]+)_([0-9]+)_([A-Za-z0-9 _\.]+)\]/i',
-                '/https:\/\/www\.youtube\.com\/watch\?v=([0-9a-zA-Z-+_=]*)/i',
-                '/\[YOUTUBE\]([0-9a-zA-Z-+_=]*?)\[\/YOUTUBE\]/i',
-                '/(?<!href=\"|src=\"|\])((http|ftp)+(s)?:\/\/[^<>\s]+)/i'
-               );
 
-        // Download permission alert message
-        $down_alert = (
-            $down_perm ? 
-            '' : 
-            'onclick="alert(\'Your usergroup does not have permission to download arquives / full size images!\'); return false;"'
-        );
-        
-        $all = ((WcPgc::myGet('mode') != 'send_msg') ? WcPgc::myGet('all') : 'ALL');
-
-        $replace =
-            array(
-                '<b>\\1</b>',
-                '<i>\\1</i>',
-                '<u>\\1</u>',
-                '<div style="margin: 10px">
-                    <img src="\\1" class="thumb" onload="wc_scroll(\''.$all.'\')">
-                </div>',
-                '<div style="width: \\3px;" class="thumb_container">
-                    <img src="' . WcChat::$includeDir . 'files/attachments/\\5" style="width: \\3px; height: \\4px;" class="thumb" onload="wc_scroll(\''.$all.'\')"><br>
-                    <img src="' . WcChat::$includeDirTheme . 'images/attach.png">
-                    <a href="' . ($down_perm ? WcChat::$includeDir . 'files/attachments/\\5' : '#') . '" target="_blank" ' . $down_alert . '>\\1 x \\2</a>
-                </div>',
-                '<div style="width: \\3px;" class="thumb_container">
-                    <img src="' . WcChat::$includeDir . 'files/thumb/tn_\\5.jpg" class="thumb" onload="wc_scroll(\''.$all.'\')"><br>
-                    <img src="' . WcChat::$includeDirTheme . 'images/attach.png">
-                    <a href="' . ($down_perm ? WcChat::$includeDir . 'files/attachments/\\6' : '#') . '" target="_blank" ' . $down_alert . '>\\1 x \\2</a>
-                </div>',
-                '<div style="width: \\3px;" class="thumb_container">
-                    <img src="\\5" style="width: \\3px; height: \\4px;" class="thumb" onload="wc_scroll(\''.$all.'\')"><br>
-                    <a href="' . ($down_perm ? '\\5' : '#') . '" target="_blank" ' . $down_alert . '>\\1 x \\2</a>
-                </div>',
-                '<div style="width: \\3px;" class="thumb_container">
-                    <img src="' . WcChat::$includeDir . 'files/thumb/tn_\\5.jpg" class="thumb" onload="wc_scroll(\''.$all.'\')"><br>
-                    <a href="' . ($down_perm ? '\\6' : '#') . '" target="_blank" ' . $down_alert.'>\\1 x \\2</a>
-                </div>',
-                '<div style="width: \\1px;" class="thumb_container">
-                    <img src="\\2" style="width: \\1px;" class="thumb" onload="wc_scroll(\''.$all.'\')"><br>
-                    <a href="' . ($down_perm ? '\\2' : '#').'" target="_blank" ' . $down_alert . '>Unknown Dimensions</a>
-                </div>',
-                '<a href="\\1" target="_blank">\\2</a>',
-                '<div style="margin:10px;">
-                    <i>
-                        <img src="' . WcChat::$includeDirTheme . 'images/attach.png"> 
-                        <a href="' . ($down_perm ? WcChat::$includeDir . 'files/attachments/\\1_\\2_\\4' : '#') . '" target="_blank" ' . $down_alert . '>\\4</a> 
-                        <span style="font-size: 10px">(\\3KB)</span>
-                    </i>
-                </div>',
-                '<div id="im_'.$msg_id.'\\1">
-                    <a href="#" onclick="wc_pop_vid(\''.$msg_id.'\\1\', \'\\1\', ' . VIDEO_WIDTH . ', ' . VIDEO_HEIGHT . '); return false;">
-                        <img src="' . WcChat::$includeDirTheme . 'images/video_cover.jpg" class="thumb" style="margin: 10px; width: '.IMAGE_MAX_DSP_DIM.'px" onload="wc_scroll(\''.$all.'\')">
-                    </a>
-                </div>
-                <div id="wc_video_'.$msg_id.'\\1" class="closed"></div>',
-                '<div id="im_'.$msg_id.'\\1">
-                    <a href="#" onclick="wc_pop_vid(\''.$msg_id.'\\1\', \'\\1\', ' . VIDEO_WIDTH . ', ' . VIDEO_HEIGHT . '); return false;">
-                        <img src="' . WcChat::$includeDirTheme . 'images/play.png" style="float: left; position: relative; left: 20px; top: 5px;z-index: 3" onload="wc_scroll(\''.$all.'\')">
-                        <img src="' . WcChat::$includeDir . 'files/thumb/tn_youtube_\\1.jpg" class="thumb" style="margin: 10px; position: relative; left: 0;" onload="wc_scroll(\''.$all.'\')">
-                    </a>
-                </div>
-                <div id="wc_video_'.$msg_id.'\\1" class="closed"></div>',
-                '<a href="\\0" target="_blank" style="font-size:10px;font-family:tahoma">\\0</a>'
-            );
-
-        $output = preg_replace($search, $replace, $data);
-
-        // Process smilies next with the bbcode
-        $smilies =
-            array(
-                '1' => ':)',
-                '3' => ':o',
-                '2' => ':(',
-                '4' => ':|',
-                '5' => ':frust:',
-                '6' => ':D',
-                '7' => ':p',
-                '8' => '-_-',
-				'9' => '>_<',
-                '10' => ':E',
-                '11' => ':mad:',
-                '12' => '^_^',
-                '13' => ':cry:',
-                '14' => ':inoc:',
-                '15' => ':z',
-                '16' => ':love:',
-                '17' => '@_@',
-                '18' => ':sweat:',
-                '19' => ':ann:',
-                '20' => ':susp:',
-				'21' => ':cup:'
-            );
-
-
-        foreach($smilies as $key => $value) {
-            $output =
-                str_replace(
-                    $value,
-                    self::popTemplate(
-                        'wcchat.toolbar.smiley.item.parsed',
-                        array('key' => $key)
-                    ),
-                    $output
-                );
-        }
-        
-        // Highligh current user references witin the text
-        $output = str_replace(
-            '@'.$user_name, 
-            self::popTemplate(
-                'wcchat.posts.curr_user_ref',
-                array('NAME' => $user_name)
-            ), 
-            $output
-        );
-
-        return $output;
-    }
-    */
-    /**
-     * Parses a long posted message and generates toggle interface
-     * 
-     * @since 1.4
-     * @param string $data
-     * @return string Parsed Data
-     */
-    public static function parseLongMsg($data, $id) {
+    // Parses a long posted message and generates toggle interface @param string $data, @return string Parsed Data
+    public static function parseLongMsg($data, $id) { #jv-1.4
         
         $string_len = strlen($data);
         if($string_len > MAX_DATA_LEN && MAX_DATA_LEN > 0) {
@@ -509,36 +404,6 @@ public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL
      * @param string $data
      * @return string Parsed Data
      */
-	 /*
-    public static function parseBBcodeThumb($text) {
-        if(
-            !preg_match('/(?<!=\"|\[IMG\]|[|]\])((http|ftp)+(s)?:\/\/[^<>\s]+)(.jpg|.jpeg|.png|.gif)([^ ]*)/i', $text) && 
-            !preg_match('/\[IMG\](.*?)\[\/IMG\]/i', $text) && 
-            !preg_match('/https:\/\/www\.youtube\.com\/watch\?v=([0-9a-zA-Z-+_=]*)([^ ]*)/i', $text)
-        ) {
-            $text = trim($text);
-        } else {
-            // Image(s) detected, try parse to more detailed tags with information about the image(s)
-            $text = preg_replace_callback(
-                '/(?<!=\"|\[IMG\]|[|]\])((http|ftp)+(s)?:\/\/[^<>\s]+(\.jpg|\.jpeg|\.png|\.gif)([^ ]*))/i',
-                'WcImg::parseImg',
-                trim($text)
-            );
-            $text = preg_replace_callback(
-                '/\[IMG\](.*?)\[\/IMG\]/i',
-                'WcImg::parseImg',
-                trim($text)
-            );
-            $text = preg_replace_callback(
-                '/https:\/\/www\.youtube\.com\/watch\?v=([0-9a-zA-Z-+_=]*)/',
-                'WcImg::parseVideoImg',
-                trim($text)
-            );
-        }
-        
-        return $text;
-    }
-	*/
 	public static function parseBBcodeThumb($text) {
 		// Define regular expressions to match images and videos
 		$imageRegex = '/(?<!=\"|\[IMG\]|[|]\])((http|ftp)+(s)?:\/\/[^<>\s]+(\.jpg|\.jpeg|\.png|\.gif)([^ ]*))/i';
@@ -571,5 +436,4 @@ public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL
 	}
   
 }
-
 ?>

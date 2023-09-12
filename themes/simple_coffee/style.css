@@ -359,8 +359,10 @@ body {
 
 #wc_msg_container .msg .curr_user_ref,
 #wc_msg_container .msg_pm .curr_user_ref {
-    background-color: #dee7f4;
+	background-color: #967259;
+    color: antiquewhite;
     padding: 3px;
+    border-radius: 10px;
 }
 
 #wc_msg_container .load_older_controls {
