@@ -196,6 +196,6 @@ define('DATA_DIR', __DIR__ . '/data/');
 #                  Donation/Copyright
 # ============================================================================
 
-define('SCRIPT_NAME', 'WaterCooler Chat');
-define('SCRIPT_VERSION', '1.4.21');
+define('SCRIPT_NAME', 'CoffeePot Chat');
+define('SCRIPT_VERSION', '1.5.0');
 ?>
