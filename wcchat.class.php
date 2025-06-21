@@ -199,9 +199,8 @@ class WcChat {
      * Initializes Chat Environment
      * 
      * @since 1.4
-     * @return void
      */
-    protected function init() {
+    protected function init() : void {
 
         if(session_id() == '') { session_start(); }
 
@@ -223,14 +222,59 @@ class WcChat {
         // Initializes user variables
         $this->user->init();
     }
+    
+    /**
+     * Checks if the current active theme images are readable
+     * 
+     * @since 1.5
+     */
+    private static function warnIfThemeHasUnReadableImages() : string {
+        $n = 0;
+        $arr = ['images', 'bbcode', 'smilies'];
+        $images = ['archived.png', 'arrow.png', 'arrow_r.png', 'attach.png', 'bgrcol.jpg', 
+            'bt.png', 'clr.png', 'cmd.png', 'croom.png', 'edit.gif', 'edtmode.png', 
+            'gsett.png', 'guest.png', 'ignored.png', 'joined_off.png', 'joined_on.png', 
+            'loader.gif', 'mline.png', 'mod.png', 'muted.png', 'new_msg_separator.png', 
+            'nmsg.png', 'nmsg_off.png', 'nmsg_off_small.png', 'nmsg_off_small_sub.png', 
+            'nmsg_off_sub.png', 'nmsg_offs.png', 'nmsg_offs_sub.png', 'nmsg_sub.png', 
+            'nmsgs.png', 'nmsgs_sub.png', 'noav.gif', 'nroom.png', 'pixel.gif', 'play.png', 
+            'quote.gif', 'reload.png', 'room.png', 'search.gif', 'settings_icon.png', 'sline.png', 
+            'sroom.png', 'sroom_new.png', 'sroom_void.png', 'sticky.png', 'ts.png', 'upl.png', 
+            'video_cover.jpg', 'wc_icon.png', 'web.png'
+        ];
+        $bbcode = ['b.png', 'i.png', 'img.png', 'tube.png', 'u.png', 'url.png', 'urlt.png'];
+        $smilies = ['sm1.gif', 'sm10.gif', 'sm11.gif', 'sm12.gif', 'sm13.gif', 'sm14.gif', 
+            'sm15.gif', 'sm16.gif', 'sm17.gif', 'sm18.gif', 'sm19.gif', 'sm2.gif', 
+            'sm20.gif', 'sm3.gif', 'sm4.gif', 'sm5.gif', 'sm6.gif', 'sm7.gif', 'sm8.gif', 
+            'sm9.gif'
+        ];
+        foreach($arr as $v) {
+            foreach($$v as $value) {
+                $file = self::$includeDirServer . 
+                    'themes/' . THEME . '/images/' . 
+                    ($v !== 'images' ? $v . '/' : '') . $value;
+                if(!is_dir($file)) {
+                    if(!is_readable($file)) {
+                        $n++;
+                    }
+                }
+            }
+        }
+        
+        if($n > 0) {
+            return '<div style="border: 1px dashed #000000; padding: 5px 10px; background-color: #FFD68B; font-size: 12px"><b>WARNING:</b> Current active theme has <b>' . $n . '</b> unreadable image(s).<br>
+            Be sure to set readable permission to all images in the "themes" folder.</div>';
+        } else {
+            return '';
+        }
+    }
 
     /**
      * Initializes Includes / Paths
      * 
      * @since 1.4
-     * @return void
      */
-    private function initIncPath() {
+    private function initIncPath() : void {
 
         self::$includeDirServer = __DIR__ . '/';
     
@@ -246,6 +290,14 @@ class WcChat {
         
         self::$wcPrefix = strtoupper(dechex(crc32(self::$includeDirServer)));
         
+        self::$dataDir = (DATA_DIR ? rtrim(DATA_DIR, '/') . '/' : '');
+        self::$roomDir = DATA_DIR . 'rooms/';
+        self::$includeDir = (
+            trim(INCLUDE_DIR, '/') ? 
+            '/' . trim(INCLUDE_DIR, '/') . '/' : 
+            '/'
+        );
+        
         // Halt if settings has errors
         $settings_has_errors = WcUtils::settingsHasErrors();
         if($settings_has_errors !== FALSE) {
@@ -256,26 +308,6 @@ class WcChat {
                 $settings_has_errors
             ;
             die(); 
-        }
-        
-        self::$dataDir = (DATA_DIR ? rtrim(DATA_DIR, '/') . '/' : '');
-        self::$roomDir = DATA_DIR . 'rooms/';
-        self::$includeDir = (
-            trim(INCLUDE_DIR, '/') ? 
-            '/' . trim(INCLUDE_DIR, '/') . '/' : 
-            '/'
-        );
-        
-        // Attempt to set the include dir on the very first run
-        if(
-            !file_exists(self::$roomDir . base64_encode(DEFAULT_ROOM) . '.txt') && 
-            WcPgc::myServer('REQUEST_URI') != '/' && 
-            is_writable(self::$includeDirServer . 'settings.php')
-        ) {
-            self::$includeDir = '/' . trim(WcPgc::myServer('REQUEST_URI'), '/') . '/';
-            WcFile::updateConf(
-                array('INCLUDE_DIR' => trim(WcPgc::myServer('REQUEST_URI'), '/'))
-            );
         }
         
         define('THEME', (
@@ -301,9 +333,8 @@ class WcChat {
      * Initializes Data Files
      * 
      * @since 1.2
-     * @return void|string Html template
      */
-    private function initDataFiles() {
+    private function initDataFiles() : void {
 
         // Halt if non writable folders exist
         $has_non_writable_folders = WcFile::hasNonWritableFolders();
@@ -348,7 +379,11 @@ class WcChat {
         if(!file_exists(MESSAGES_LOC)) {
             file_put_contents(
                 MESSAGES_LOC,
-                    time() . '|*' . base64_encode('Room') . '| has been created.' . "\n"
+                    time() . '|*' . base64_encode('Room') . '| has been created.<br>' . 
+                    'Developer: Welcome to wc chat.<br>'.
+                    'To keep this software free, '.
+                    '<a href="https://www.paypal.com/donate/?hosted_button_id=EMSBXSD7EWDN4" target="_blank">make a donation</a>' . 
+                    "\n"
             );
         }
         
@@ -392,9 +427,8 @@ class WcChat {
      * Handles main form requests
      * 
      * @since 1.4
-     * @return void
      */
-    private function handleMainForm() {
+    private function handleMainForm() : void {
     
         // Skip this if it's an ajax call
         if(WcPgc::myGet('mode')) {
@@ -407,7 +441,7 @@ class WcChat {
             WcPgc::wcUnsetSession('login_err');
             WcPgc::wcUnsetCookie('cname');
             WcPgc::wcUnsetCookie('chatpass');
-            WcPgc::wcSetSession('skip_cookie', 1);
+            WcPgc::wcSetSession('skip_cookie', '1');
             if($this->room->isConv) {
                 WcPgc::wcUnsetSession('current_room');
                 WcPgc::wcUnsetCookie('current_room');
@@ -446,8 +480,7 @@ class WcChat {
                     ) . WcPgc::myServer('SERVER_NAME') . $request_uri[0],
                     WcUtils::mailHeaders(
                         (
-                            trim(ACC_REC_EMAIL) ? 
-                            trim(ACC_REC_EMAIL) : 
+                            trim(ACC_REC_EMAIL) ?: 
                             'no-reply@' . WcPgc::myServer('SERVER_NAME')
                         ),
                         TITLE,
@@ -574,9 +607,8 @@ class WcChat {
      * Prints the populated index template
      * 
      * @since 1.1
-     * @return void
      */
-    public function printIndex($embedded = NULL) {
+    public function printIndex(bool $embedded = FALSE) : string {
 
         $onload = $contents = '';
         $this->init();
@@ -591,11 +623,11 @@ class WcChat {
                             array(
                                 'USER_NAME' => $this->user->name
                             ), 
-                            $this->user->data['pass'] && !$this->user->isCertified
+                            ($this->user->data['pass'] && !$this->user->isCertified)
                         ),
                     'MODE' => (($this->user->data['pass'] && !$this->user->isCertified) ? 
-                        WcGui::popTemplate('wcchat.join.inner.mode.login', '') : 
-                        WcGui::popTemplate('wcchat.join.inner.mode.join', '')
+                        WcGui::popTemplate('wcchat.join.inner.mode.login') : 
+                        WcGui::popTemplate('wcchat.join.inner.mode.join')
                     ),
                     'CUSER_LINK' => WcGui::popTemplate(
                         'wcchat.join.cuser_link', 
@@ -606,11 +638,11 @@ class WcChat {
                     'USER_NAME' => $this->user->name,
                     'RECOVER' => WcGui::popTemplate(
                         'wcchat.join.recover',
-                        '',
-                        $this->user->data['email'] && 
+                        [],
+                        ($this->user->data['email'] && 
                         $this->user->data['pass'] && 
                         !$this->user->isCertified && 
-                        $this->user->hasPermission('ACC_REC', 'skip_msg')
+                        $this->user->hasPermission('ACC_REC', 'skip_msg'))
                     )
                 )
             );
@@ -665,7 +697,8 @@ class WcChat {
             'IMAGE_MAX_DSP_DIM',  'IMAGE_AUTO_RESIZE_UNKN', 'VIDEO_WIDTH', 'VIDEO_HEIGHT', 
             'AVATAR_SIZE', 'DEFAULT_AVATAR', 'DEFAULT_ROOM', 'DEFAULT_THEME', 
             'INVITE_LINK_CODE', 'ACC_REC_EMAIL', 'ATTACHMENT_TYPES', 'ATTACHMENT_MAX_FSIZE', 
-            'ATTACHMENT_MAX_POST_N', 'POST_EDIT_TIMEOUT', 'MAX_DATA_LEN'
+            'ATTACHMENT_MAX_POST_N', 'POST_EDIT_TIMEOUT', 'MAX_DATA_LEN', 'INACTIVE_ROOM_MIN', 
+            'SEARCH_ROOM_LIMIT', 'SEARCH_LIMIT'
         );
 
         $gsettings_par_v = array();
@@ -685,7 +718,7 @@ class WcChat {
             'UNMOD', 'USER_E', 'USER_D', 'TOPIC_E', 'BAN', 'UNBAN', 'MUTE', 
             'UNMUTE', 'MSG_HIDE', 'MSG_UNHIDE', 'POST', 'POST_E', 'PROFILE_E', 
             'IGNORE', 'PM_SEND', 'PM_ROOM', 'LOGIN', 'ACC_REC', 'READ_MSG', 
-            'ROOM_LIST', 'USER_LIST', 'ATTACH_UPL', 'ATTACH_DOWN');
+            'ROOM_LIST', 'USER_LIST', 'ATTACH_UPL', 'ATTACH_DOWN', 'SEARCH');
 
         $gsettings_perm2 = array('MMOD', 'MOD', 'CUSER', 'USER', 'GUEST');
 
@@ -697,6 +730,11 @@ class WcChat {
                     (in_array($value2, $perm_fields) ? ' CHECKED' : '');
             }
         }
+        
+        $subrooms = $this->room->parseList(TRUE);
+        
+        $rList = $this->room->getListChanges('VISIT');
+        $uList = $this->user->getListChanges('VISIT');
 
         $contents = WcGui::popTemplate(
             'wcchat',
@@ -705,15 +743,26 @@ class WcChat {
                 'TOPIC' => WcGui::popTemplate(
                     'wcchat.topic', 
                     array(
-                        'TOPIC' => $this->room->parseTopicContainer()
+                        'TOPIC' => $this->room->parseTopicContainer(
+                            (strpos($subrooms, 'nmsg.png') !== FALSE ? TRUE : FALSE)
+                        )
                     )
                 ),
                 'STATIC_MSG' => (!$this->user->isLoggedIn ? 
                     WcGui::popTemplate('wcchat.static_msg') : 
                     ''
-                ),
+                ) . (string)self::warnIfThemeHasUnReadableImages(),
                 'POSTS' => WcGui::popTemplate('wcchat.posts'),
                 'INFO' => WcGui::popTemplate('wcchat.info'),
+                'SEARCH' => WcGui::popTemplate('wcchat.search'),
+                'SUBROOMS' => (
+                     str_replace('{MOB}', '', WcGui::popTemplate(
+                        'wcchat.subrooms',
+                        array(
+                            'CONTENT' => $subrooms
+                        )
+                    ))
+                ),
                 'GSETTINGS' => ($this->user->hasPermission('GSETTINGS', 'skip_msg') ? 
                     WcGui::popTemplate(
                         'wcchat.global_settings',
@@ -741,7 +790,7 @@ class WcChat {
                 'TOOLBAR' => WcGui::popTemplate(
                     'wcchat.toolbar',
                     array(
-                        'BBCODE' => ($BBCODE ? $BBCODE : 'Choose a name to use in chat.'),
+                        'BBCODE' => ($BBCODE ?: 'Choose a name to use in chat.'),
                         'USER_NAME' => $this->user->name ? 
                             str_replace("'", "\'", $this->user->name) : 
                             'Guest',
@@ -750,13 +799,11 @@ class WcChat {
                             'wcchat.toolbar.commands',
                             array(
                                 'GSETTINGS' => WcGui::popTemplate(
-                                    'wcchat.toolbar.commands.gsettings', 
-                                    '', 
+                                    'wcchat.toolbar.commands.gsettings', [], 
                                     $this->user->hasPermission('GSETTINGS', 'skip_msg')
                                 ),
                                 'EDIT' => WcGui::popTemplate(
-                                    'wcchat.toolbar.commands.edit', 
-                                    '', 
+                                    'wcchat.toolbar.commands.edit', [], 
                                     $this->user->hasPermission('ROOM_C', 'skip_msg') || 
                                     $this->user->hasPermission('ROOM_E', 'skip_msg') || 
                                     $this->user->hasPermission('ROOM_D', 'skip_msg') || 
@@ -802,14 +849,22 @@ class WcChat {
                     )
                 ),
                 'JOIN' => WcGui::popTemplate('wcchat.join', array('JOIN' => $JOIN)),
-                'ROOM_LIST' => WcGui::popTemplate(
+                'ROOM_LIST' => str_replace('{MOB}', '', WcGui::popTemplate(
                     'wcchat.rooms', 
-                    array('RLIST' => $this->room->getListChanges('VISIT'))
-                ),
-                'USER_LIST' => WcGui::popTemplate(
+                    array('RLIST' => $rList)
+                )),
+                'USER_LIST' => str_replace('{MOB}', '', WcGui::popTemplate(
                     'wcchat.users', 
-                    array('ULIST' => $this->user->getListChanges('VISIT'))
-                ),
+                    array('ULIST' => $uList)
+                )),
+                'ROOM_LIST_M' => str_replace('{MOB}', '_m', WcGui::popTemplate(
+                    'wcchat.rooms', 
+                    array('RLIST' => $rList)
+                )),
+                'USER_LIST_M' => str_replace('{MOB}', '_m', WcGui::popTemplate(
+                    'wcchat.users', 
+                    array('ULIST' => $uList)
+                )),
                 'THEMES' => WcGui::parseThemes()
             )
         );
@@ -837,13 +892,13 @@ class WcChat {
             $tag = (
                 (intval($this->user->isBanned) == 0) ? 
                 ' (Permanently)' : 
-                ' (' . WcTime::parseIdle($this->user->isBanned, 1) . ' remaining)'
+                ' (' . WcTime::parseIdle($this->user->isBanned, '1') . ' remaining)'
             );
         }
 
         // Output the index template
         return WcGui::popTemplate(
-            ($embedded === NULL ? 'index' : 'index_embedded'),
+            ($embedded === FALSE ? 'index' : 'index_embedded'),
             array(
                 'TITLE' => TITLE,
                 'CONTENTS' => (
@@ -874,22 +929,17 @@ class WcChat {
      * Processes Ajax Requests
      * 
      * @since 1.1
-     * @param string $mode
-     * @return void
      */
-    public function ajax() {
+    public function ajax() : void {
     
         $this->init();
 
         if(WcPgc::myGet('mode')) {
-        
-        if(!preg_match('/[^A-Za-z0-9_]/i', WcPgc::myGet('mode'))) {
-            include(self::$includeDirServer . 'includes/wcajax.' . WcPgc::myGet('mode') . '.php');
+            if(!preg_match('/[^A-Za-z0-9_]/i', WcPgc::myGet('mode'))) {
+                include(self::$includeDirServer . 'includes/wcajax.' . WcPgc::myGet('mode') . '.php');
             }
-            
         }   
     }
-       
 }
 
 ?>

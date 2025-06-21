@@ -24,7 +24,7 @@ define('TITLE', 'My Chat');
 # ============================================================================
 
 // Relative Path from web root to chat system (Empty if on the root)
-define('INCLUDE_DIR', '');
+define('INCLUDE_DIR', rtrim(dirname($_SERVER['REQUEST_URI']), '/') . '/');
 
 # ============================================================================
 #                  CHAT SETTINGS
@@ -120,11 +120,22 @@ define('ATTACHMENT_MAX_POST_N', 2);
 
 
 # ============================================================================
+#                  SEARCH
+# ============================================================================
+
+define('SEARCH_ROOM_LIMIT', 20);
+define('SEARCH_LIMIT', 100);
+
+
+# ============================================================================
 #                  DEFAULT ROOM AND THEME
 # ============================================================================
 
 define('DEFAULT_ROOM', 'General');
 define('DEFAULT_THEME' , 'simple_blue');
+
+// Minimum number of time to consider a room inactive (in seconds)
+define('INACTIVE_ROOM_MIN', 604800);
 
 
 # ============================================================================
@@ -162,6 +173,7 @@ define('PERM_IGNORE', 'MMOD MOD CUSER USER');
 define('PERM_PM_SEND', 'MMOD MOD CUSER USER');
 define('PERM_PM_ROOM', 'MMOD MOD CUSER USER');
 
+define('PERM_SEARCH', 'MMOD MOD CUSER USER');
 define('PERM_ACC_REC', 'GUEST');
 define('PERM_LOGIN', 'GUEST');
 define('PERM_READ_MSG', 'MMOD MOD CUSER USER GUEST');
@@ -192,5 +204,5 @@ define('DATA_DIR', __DIR__ . '/data/');
 # ============================================================================
 
 define('SCRIPT_NAME', 'WaterCooler Chat');
-define('SCRIPT_VERSION', '1.4.21');
+define('SCRIPT_VERSION', '1.5.2');
 ?>

@@ -1,9 +1,9 @@
 ﻿**********************************************
 ----------------------------------------------
-*  WaterCooler Chat 1.4                      *
+*  WaterCooler Chat 1.5                      *
 ----------------------------------------------
   Copyright (c) 2018
-  v1.4 originally written by João Ferreira
+  v1.5 originally written by João Ferreira
 
 ----------------------------------------------
 *  README                                    *
@@ -41,6 +41,9 @@
     - Smart archive system
     - Shared Chat Across the websites hosted on the same server
     - Private Conversation Rooms
+    - Search Feature
+    - Sub-Rooms
+    - Mobile responsive layout
 
 
 ===========================================================================
@@ -64,7 +67,7 @@
                        REQUIREMENTS
 ============================================================================
 
-  - PHP >= 5.3.0
+  - PHP >= 7.0
   - Ability to change permissions if necessary
   - PHP GD library (for generating image thumbnails)
 
@@ -110,6 +113,8 @@
   - To remove the copyright note, you must make a donation to the project (See below).
 
   - It is recommended to rename the data directory (or move it outside the web root) to ensure user's privacy. (don't forget to rename on settings.php as well)
+  
+  - Search does not display private conversations
 
 
 ============================================================================
@@ -118,7 +123,7 @@
 
 If you like this project, consider making a donation:
 
-https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9ZHN6EUXWLAQG
+https://www.paypal.com/donate/?hosted_button_id=EMSBXSD7EWDN4
 
 Thank you for choosing WaterCooler Chat.
 

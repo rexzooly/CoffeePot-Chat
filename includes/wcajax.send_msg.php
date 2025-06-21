@@ -11,16 +11,16 @@
         die();
     }
 
-    if(strlen(WcPgc::myGet('t')) > 0) {
+    if(strlen(WcPgc::myPost('t')) > 0) {
 
         // Is ignore request?
-        if(preg_match('#^(/ignore|/unignore)#i', WcPgc::myGet('t'))) {
+        if(preg_match('#^(/ignore|/unignore)#i', WcPgc::myPost('t'))) {
 
             // Yes, is ignore request, does user has permission to ignore?
             if(!$this->user->hasPermission('IGNORE')) { die(); }
 
             // Yes, has permission, process request
-            $par = explode(' ', trim(WcPgc::myGet('t')), 2);
+            $par = explode(' ', trim(WcPgc::myPost('t')), 2);
             switch($par[0]) {
                 case '/ignore':
                     if($this->user->match($par[1]) !== FALSE) {
@@ -35,7 +35,7 @@
                         );
                         echo 'Successfully ignored ' . $par[1];
                     } else {
-                        echo 'User ' . $par1 . ' does not exist.';
+                        echo 'User ' . $par[1] . ' does not exist.';
                     }
                 break;
                 
@@ -69,7 +69,7 @@
                 $muted_msg = 'You have been set as mute'.
                     (
                         $this->user->isMuted ? 
-                        ' (' . WcTime::parseIdle($this->user->isMuted, 1) . ' remaining)' : 
+                        ' (' . WcTime::parseIdle($this->user->isMuted, '1') . ' remaining)' : 
                         ''
                     ) . ', you cannot talk for the time being!'
                 ;
@@ -97,7 +97,7 @@
                     die();
                 }
                 $name_prefix = '';
-                $text = WcPgc::myGet('t');
+                $text = WcPgc::myPost('t');
                 
                 if($this->room->isConv) {
                     $target = $this->room->getConvTarget(WcPgc::mySession('current_room'));
@@ -181,8 +181,8 @@
                         $archive = str_replace(
                             '.txt', 
                             '.' . $this->room->def['lArchVol'], 
-                            str_replace(basename(
-                                MESSAGES_LOC), 
+                            str_replace(
+								basename(MESSAGES_LOC), 
                                 'archived/' . basename(MESSAGES_LOC),
                                 MESSAGES_LOC
                             )
@@ -195,8 +195,8 @@
                             $archive = str_replace(
                                 '.txt', 
                                 '.' . $this->room->def['lArchVol'], 
-                                str_replace(basename(
-                                    MESSAGES_LOC), 
+                                str_replace(
+									basename(MESSAGES_LOC), 
                                     'archived/' . basename(MESSAGES_LOC),
                                     MESSAGES_LOC
                                 )
@@ -222,7 +222,7 @@
                 $towrite = 
                     WcTime::parseMicroTime() . '|' . 
                     $name_prefix . base64_encode($this->user->name) . '|' . 
-                    str_replace("\n", '<br>', strip_tags($text)) . 
+                    str_replace(array('$', '{', '}'), array('&dollar;', '&#123;', '&#125;'), str_replace("\n", '<br>', htmlentities($text))) . 
                     "\n"
                 ;
                 WcFile::writeFile(MESSAGES_LOC, $source . $towrite, 'w');
@@ -233,10 +233,10 @@
                     0, 
                     'SEND'
                 );
-                WcPgc::wcSetSession('lastpost', time());
+                WcPgc::wcSetSession('lastpost', (string)time());
                 echo $output;
             } else {
-                echo ($banned_msg ? $banned_msg : $muted_msg);
+                echo ($banned_msg ?: $muted_msg);
             }
         }
     }

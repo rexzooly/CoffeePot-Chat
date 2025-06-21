@@ -13,19 +13,14 @@ class WcGui {
      * Populates Templates with data from an array
      * 
      * @since 1.1
-     * @param string $model Template Model
-     * @param array|null $data
-     * @param bool|null $cond Condition to display
-     * @param string $no_cond_content Content to display if condition is not met
-     * @return string|void Html Template
      */
     public static function popTemplate(
-        $model, $data = NULL, 
-        $cond = NULL, $no_cond_content = NULL
-    ) {
+        string $model, array $data = NULL, 
+        bool $cond = TRUE, string $no_cond_content = NULL
+    ) : string {
     
         $out = '';
-        if (!isset($cond) || (isset($cond) && $cond == TRUE)) {
+        if ($cond === TRUE) {
             // Import template model
             $out = WcChat::$templates[$model];
 
@@ -50,16 +45,16 @@ class WcGui {
                     '{INCLUDE_DIR}',
                     '{INCLUDE_DIR_THEME}',
                     '{PREFIX}',
-					'{SCRIPT_NAME}',
-					'{SCRIPT_VERSION}'
+                    '{SCRIPT_NAME}',
+                    '{SCRIPT_VERSION}'
                 ),
                 array(
                     WcChat::$ajaxCaller,
                     WcChat::$includeDir,
                     WcChat::$includeDirTheme,
                     WcChat::$wcPrefix,
-					SCRIPT_NAME,
-					SCRIPT_VERSION
+                    SCRIPT_NAME,
+                    SCRIPT_VERSION
                 ),
                 $out
             );
@@ -76,14 +71,15 @@ class WcGui {
      * Includes Theme Templates
      * 
      * @since 1.4
-     * @return void
      */
-    public static function includeTemplates() {
+    public static function includeTemplates() : array {
+		$templates = [];
         $array = array(
             'global_sett', 'index', 'info', 'join',
             'login', 'main', 'posts', 'profile_sett',
-            'rooms', 'static_msg', 'text_input', 'themes',
-            'toolbar', 'topic', 'users'
+            'rooms', 'search', 'subrooms', 'static_msg', 
+            'text_input', 'themes', 'toolbar', 'topic', 
+            'users'
         );
         
         foreach($array as $value) {
@@ -101,10 +97,8 @@ class WcGui {
      * Generates the Smiley interface
      * 
      * @since 1.1
-     * @param string $field Target Html Id
-     * @return string Html Template
      */
-    public static function iSmiley($field, $cont) {
+    public static function iSmiley(string $field, string $cont) {
     
         $out = '';
         $s1 =
@@ -153,9 +147,8 @@ class WcGui {
      * Generates the theme List
      * 
      * @since 1.2
-     * @return string Html Template
      */
-    public static function parseThemes() {
+    public static function parseThemes() : string {
     
         $options = '';
         foreach(glob(WcChat::$includeDirServer . 'themes/*') as $file) {
@@ -189,15 +182,15 @@ class WcGui {
      * Parses BBCODE/Smilie Tags Into Html codes
      * 
      * @since 1.1
-     * @param string $data
-     * @param bool $down_perm
-     * @param string $user_name          
-     * @return string Parsed Msg
      */
-    public static function parseBbcode($data, $down_perm, $user_name, $msg_id = NULL) {
-    
+    public static function parseBbcode(
+        string $data, bool $down_perm, string $user_name, 
+        string $msg_id = NULL
+    ) : string {
         $search =
             array(
+                '/\[color\=([#0-9a-zA-Z]+)\](.*?)\[\/color\]/i',
+                '/\[quote\](.*?)\[\/quote\]([<br>]*)/i',
                 '/\[b\](.*?)\[\/b\]/i',
                 '/\[i\](.*?)\[\/i\]/i',
                 '/\[u\](.*?)\[\/u\]/i',
@@ -207,9 +200,9 @@ class WcGui {
                 '/\[img\|([0-9]+)x([0-9]+)\|([0-9]+)x([0-9]+)[|]?\](.*?)\[\/img\]/i',
                 '/\[img\|([0-9]+)x([0-9]+)\|([0-9]+)x([0-9]+)\|tn_([0-9A-Z]+)[|]?\](.*?)\[\/img\]/i',
                 '/\[img\|([0-9]+)[|]?\](.*?)\[\/img\]/i',
-                '/\[url\="(.*?)"\](.*?)\[\/url\]/i',
+                '/\[url\=("|&quot;)(.*?)("|&quot;)\](.*?)\[\/url\]/i',
                 '/\[attach_(.*?)_([0-9a-f]+)_([0-9]+)_([A-Za-z0-9 _\.]+)\]/i',
-                '/https:\/\/www\.youtube\.com\/watch\?v=([0-9a-zA-Z-+_=]*)/i',
+                '/https:\/\/(www|m)\.youtube\.com\/(watch\?v=|shorts\/)([0-9a-zA-Z-+_=]*)/i',
                 '/\[YOUTUBE\]([0-9a-zA-Z-+_=]*?)\[\/YOUTUBE\]/i',
                 '/(?<!href=\"|src=\"|\])((http|ftp)+(s)?:\/\/[^<>\s]+)/i'
                );
@@ -225,6 +218,8 @@ class WcGui {
 
         $replace =
             array(
+                '<span style="color: \\1">\\2</span>',
+                '<div style="max-height: 100px; overflow: auto; margin: 10px; padding: 10px; background-color: #e3e3ea; border: 1px dashed #ccccdd; color: #3a3a66;"><i>\\1</i></div>',
                 '<b>\\1</b>',
                 '<i>\\1</i>',
                 '<u>\\1</u>',
@@ -253,7 +248,7 @@ class WcGui {
                     <img src="\\2" style="width: \\1px;" class="thumb" onload="wc_scroll(\''.$all.'\')"><br>
                     <a href="' . ($down_perm ? '\\2' : '#').'" target="_blank" ' . $down_alert . '>Unknown Dimensions</a>
                 </div>',
-                '<a href="\\1" target="_blank">\\2</a>',
+                '<a href="\\2" target="_blank">\\4</a>',
                 '<div style="margin:10px;">
                     <i>
                         <img src="' . WcChat::$includeDirTheme . 'images/attach.png"> 
@@ -261,12 +256,12 @@ class WcGui {
                         <span style="font-size: 10px">(\\3KB)</span>
                     </i>
                 </div>',
-                '<div id="im_'.$msg_id.'\\1">
-                    <a href="#" onclick="wc_pop_vid(\''.$msg_id.'\\1\', \'\\1\', ' . VIDEO_WIDTH . ', ' . VIDEO_HEIGHT . '); return false;">
+                '<div id="im_'.$msg_id.'\\3">
+                    <a href="#" onclick="wc_pop_vid(\''.$msg_id.'\\3\', \'\\3\', ' . VIDEO_WIDTH . ', ' . VIDEO_HEIGHT . '); return false;">
                         <img src="' . WcChat::$includeDirTheme . 'images/video_cover.jpg" class="thumb" style="margin: 10px; width: '.IMAGE_MAX_DSP_DIM.'px" onload="wc_scroll(\''.$all.'\')">
                     </a>
                 </div>
-                <div id="wc_video_'.$msg_id.'\\1" class="closed"></div>',
+                <div id="wc_video_'.$msg_id.'\\3" class="closed"></div>',
                 '<div id="im_'.$msg_id.'\\1">
                     <a href="#" onclick="wc_pop_vid(\''.$msg_id.'\\1\', \'\\1\', ' . VIDEO_WIDTH . ', ' . VIDEO_HEIGHT . '); return false;">
                         <img src="' . WcChat::$includeDirTheme . 'images/play.png" style="float: left; position: relative; left: 20px; top: 5px;z-index: 3" onload="wc_scroll(\''.$all.'\')">
@@ -334,13 +329,13 @@ class WcGui {
      * Parses a long posted message and generates toggle interface
      * 
      * @since 1.4
-     * @param string $data
-     * @return string Parsed Data
      */
-    public static function parseLongMsg($data, $id) {
+    public static function parseLongMsg(
+        string $data, string $id, bool $no_crop = FALSE
+    ) : string {
         
         $string_len = strlen($data);
-        if($string_len > MAX_DATA_LEN && MAX_DATA_LEN > 0) {
+        if($string_len > MAX_DATA_LEN && MAX_DATA_LEN > 0 && !$no_crop) {
             $cropped = substr($data, 0, MAX_DATA_LEN);
             return WcGui::popTemplate(
                 'wcchat.posts.partial_content',
@@ -360,20 +355,24 @@ class WcGui {
      * Parses links within a string and generates thumbnail bbcode tags
      * 
      * @since 1.4
-     * @param string $data
-     * @return string Parsed Data
      */
-    public static function parseBBcodeThumb($text) {
+    public static function parseBBcodeThumb(string $text) : string {
         if(
-            !preg_match('/(?<!=\"|\[IMG\]|[|]\])((http|ftp)+(s)?:\/\/[^<>\s]+)(.jpg|.jpeg|.png|.gif)([^ ]*)/i', $text) && 
+            !preg_match(
+				'/\b(?<!=\"|\[IMG\]|[|]\])((http|ftp)+(s)?:\/\/[^<>\s]+)(.jpg|.jpeg|.png|.gif)\b/i', 
+				$text
+			) && 
             !preg_match('/\[IMG\](.*?)\[\/IMG\]/i', $text) && 
-            !preg_match('/https:\/\/www\.youtube\.com\/watch\?v=([0-9a-zA-Z-+_=]*)([^ ]*)/i', $text)
+            !preg_match(
+				'/\bhttps:\/\/(www|m)\.youtube\.com\/(watch\?v=|shorts\/)([0-9a-zA-Z-+_=]*)\b/i', 
+				$text
+			)
         ) {
             $text = trim($text);
         } else {
             // Image(s) detected, try parse to more detailed tags with information about the image(s)
             $text = preg_replace_callback(
-                '/(?<!=\"|\[IMG\]|[|]\])((http|ftp)+(s)?:\/\/[^<>\s]+(\.jpg|\.jpeg|\.png|\.gif)([^ ]*))/i',
+                '/\b(?<!=\"|\[IMG\]|[|]\])((http|ftp)+(s)?:\/\/[^<>\s]+(\.jpg|\.jpeg|\.png|\.gif))\b/i',
                 'WcImg::parseImg',
                 trim($text)
             );
@@ -383,7 +382,7 @@ class WcGui {
                 trim($text)
             );
             $text = preg_replace_callback(
-                '/https:\/\/www\.youtube\.com\/watch\?v=([0-9a-zA-Z-+_=]*)/',
+                '/\bhttps:\/\/(www|m)\.youtube\.com\/(watch\?v=|shorts\/)([0-9a-zA-Z-+_=]*)\b/',
                 'WcImg::parseVideoImg',
                 trim($text)
             );

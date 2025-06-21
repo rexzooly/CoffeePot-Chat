@@ -9,10 +9,10 @@
         !$this->room->hasConvPermission(WcPgc::mySession('current_room'))
     ) { die(); }
     
-    $t = WcPgc::myGet('t');
+    $t = WcPgc::myPost('t');
 
     if($t != $this->room->topic) {
-        WcFile::writeFile(TOPICL, $t, 'w', 'allow_empty');
+        WcFile::writeFile(TOPICL, $t, 'w', TRUE);
         echo $this->room->parseTopicContainer();
         
         // Clear topic lock
